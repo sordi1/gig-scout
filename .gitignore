@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+
+debug_pagina.html
+vistos.json
+
+venv/
+.venv/
+.vscode/

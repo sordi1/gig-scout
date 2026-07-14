@@ -1,0 +1,48 @@
+name: gig-scout
+
+on:
+  schedule:
+    # A cada 2 horas, das 8h às 22h no horário de Brasília (UTC-3)
+    - cron: "0 11,13,15,17,19,21,23,1 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -v
+
+  monitorar:
+    needs: testar
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - name: Restaurar estado (projetos já notificados)
+        uses: actions/cache@v4
+        with:
+          path: vistos.json
+          key: vistos-json-${{ github.run_id }}
+          restore-keys: |
+            vistos-json-
+
+      - name: Executar
+        env:
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          EMAIL_SENHA_APP: ${{ secrets.EMAIL_SENHA_APP }}
+          EMAIL_DESTINATARIO: ${{ secrets.EMAIL_DESTINATARIO }}
+        run: python main.py
