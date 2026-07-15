@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from config import MAX_PAGINAS_POR_URL, SEARCH_URLS
+from config import AVISAR_QUANDO_NAO_HOUVER_NOVIDADE, MAX_PAGINAS_POR_URL, SEARCH_URLS
 from filters import filtrar_e_ordenar
 from notifier import alertar_quebra, enviar_email, montar_email, montar_email_html
 from scraper import buscar_projetos_paginado
@@ -36,7 +36,15 @@ def main() -> None:
     logger.info("%d relevantes, %d novos desde a última execução", len(relevantes), len(novos))
 
     if not novos:
-        logger.info("Nada novo - e-mail não enviado.")
+        if AVISAR_QUANDO_NAO_HOUVER_NOVIDADE:
+            enviar_email(
+                montar_email(novos),
+                montar_email_html(novos),
+                assunto="gig-scout: nenhum projeto novo por enquanto",
+            )
+            logger.info("Nada novo - aviso enviado.")
+        else:
+            logger.info("Nada novo - e-mail não enviado (AVISAR_QUANDO_NAO_HOUVER_NOVIDADE=False).")
         return
 
     enviar_email(montar_email(novos), montar_email_html(novos))

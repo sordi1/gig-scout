@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def montar_email(projetos: list[Projeto]) -> str:
     """Versão em texto puro (usada como fallback e quando o e-mail não é enviado)."""
     if not projetos:
-        return "Nenhum projeto novo bateu com o filtro hoje."
+        return "Nenhum projeto novo desde a última verificação. Tudo funcionando normalmente."
 
     separador = "-" * 50
     blocos = [
@@ -41,7 +41,7 @@ def _cor_propostas(propostas: int) -> str:
 
 def montar_email_html(projetos: list[Projeto]) -> str:
     if not projetos:
-        return "<p>Nenhum projeto novo bateu com o filtro hoje.</p>"
+        return "<p>Nenhum projeto novo desde a última verificação. Tudo funcionando normalmente.</p>"
 
     cards = []
     for p in projetos:
