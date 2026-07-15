@@ -1,6 +1,6 @@
 # gig-scout
 
-Monitor automático de projetos freelance em sites de projetos freelancers. Raspa as listagens, filtra pelo que é relevante, ordena pelos projetos com menos concorrência e avisa por e-mail — pronto pra você revisar e decidir em segundos.
+Monitor automático de projetos freelance no 99Freelas. Raspa as listagens, filtra pelo que é relevante, ordena pelos projetos com menos concorrência e avisa por e-mail — pronto pra você revisar e decidir em segundos.
 
 Roda sozinho, de 2 em 2 horas, via GitHub Actions — sem depender de nenhum computador ligado.
 

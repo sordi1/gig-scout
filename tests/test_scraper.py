@@ -51,7 +51,7 @@ def test_paginacao_para_quando_pagina_vem_vazia(monkeypatch):
 
     paginas_chamadas = []
 
-    def fake_buscar_projetos(url):
+    def fake_buscar_projetos(url, requer_filtro_palavra_chave=True):
         paginas_chamadas.append(url)
         if "page=3" in url:
             return []

@@ -30,6 +30,7 @@ class Projeto:
     cliente_nome: str = ""
     cliente_nota: float = 0.0
     cliente_avaliacoes: int = 0
+    requer_filtro_palavra_chave: bool = True
 
 
 def _extrair_numero(texto: str) -> int:
@@ -124,16 +125,18 @@ def parse_listagem(html_bruto: str) -> list[Projeto]:
     return [p for p in projetos if p is not None]
 
 
-def buscar_projetos(url: str) -> list[Projeto]:
+def buscar_projetos(url: str, requer_filtro_palavra_chave: bool = True) -> list[Projeto]:
     """Baixa e faz o parse de uma página de listagem do 99Freelas."""
     resp = requests.get(url, headers=HEADERS, timeout=15)
     resp.raise_for_status()
     projetos = parse_listagem(resp.text)
+    for p in projetos:
+        p.requer_filtro_palavra_chave = requer_filtro_palavra_chave
     logger.info("%s -> %d projetos", url, len(projetos))
     return projetos
 
 
-def buscar_projetos_paginado(url: str, max_paginas: int = 1) -> list[Projeto]:
+def buscar_projetos_paginado(url: str, max_paginas: int = 1, requer_filtro_palavra_chave: bool = True) -> list[Projeto]:
     """Busca as primeiras `max_paginas` páginas de uma URL de listagem.
 
     Para na primeira página que não trouxer nenhum projeto novo - tanto faz
@@ -144,7 +147,7 @@ def buscar_projetos_paginado(url: str, max_paginas: int = 1) -> list[Projeto]:
     todos: list[Projeto] = []
     for pagina in range(1, max_paginas + 1):
         url_pagina = url if pagina == 1 else f"{url}{separador}page={pagina}"
-        projetos_da_pagina = buscar_projetos(url_pagina)
+        projetos_da_pagina = buscar_projetos(url_pagina, requer_filtro_palavra_chave)
         if not projetos_da_pagina:
             break
         todos.extend(projetos_da_pagina)

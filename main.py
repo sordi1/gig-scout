@@ -16,15 +16,17 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     todos_os_projetos = []
-    for url in SEARCH_URLS:
+    for url, requer_filtro_palavra_chave in SEARCH_URLS:
         try:
-            todos_os_projetos.extend(buscar_projetos_paginado(url, MAX_PAGINAS_POR_URL))
+            todos_os_projetos.extend(
+                buscar_projetos_paginado(url, MAX_PAGINAS_POR_URL, requer_filtro_palavra_chave)
+            )
         except Exception:
             logger.exception("Falha ao buscar %s", url)
 
     if not todos_os_projetos:
         logger.error("Nenhum projeto encontrado em nenhuma URL - possível quebra na raspagem.")
-        alertar_quebra(SEARCH_URLS)
+        alertar_quebra([url for url, _ in SEARCH_URLS])
         return
 
     relevantes = filtrar_e_ordenar(todos_os_projetos)

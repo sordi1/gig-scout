@@ -65,3 +65,33 @@ def test_cliente_sem_avaliacao_passa_por_padrao():
     # MIN_AVALIACOES_CLIENTE = 0 por padrão - não deve excluir ninguém por isso
     projetos = [_projeto(titulo="Automação Python", cliente_avaliacoes=0)]
     assert len(filtrar_e_ordenar(projetos)) == 1
+
+
+def test_categoria_confiavel_pula_filtro_de_palavra_chave():
+    # requer_filtro_palavra_chave=False = categoria específica (ex: Criação
+    # & Integração com IA) - confiamos nela mesmo sem bater keyword no texto
+    projetos = [_projeto(
+        titulo="Preciso de ajuda com um sistema",
+        descricao="nada aqui bate com nenhuma palavra-chave da lista",
+        requer_filtro_palavra_chave=False,
+    )]
+    assert len(filtrar_e_ordenar(projetos)) == 1
+
+
+def test_categoria_outra_exige_palavra_chave():
+    # requer_filtro_palavra_chave=True (padrão) = categoria "Outra", ampla
+    # demais - só passa se bater alguma palavra-chave de verdade
+    projetos = [_projeto(
+        titulo="Preciso de ajuda com um sistema",
+        descricao="nada aqui bate com nenhuma palavra-chave da lista",
+        requer_filtro_palavra_chave=True,
+    )]
+    assert filtrar_e_ordenar(projetos) == []
+
+
+def test_categoria_confiavel_ainda_respeita_teto_de_propostas():
+    # Pular o filtro de palavra-chave não deve pular os outros filtros
+    projetos = [_projeto(
+        titulo="Qualquer coisa", propostas=999, requer_filtro_palavra_chave=False,
+    )]
+    assert filtrar_e_ordenar(projetos) == []

@@ -15,6 +15,16 @@ def _e_relevante(projeto: Projeto) -> bool:
         return False
     if projeto.cliente_avaliacoes < MIN_AVALIACOES_CLIENTE:
         return False
+
+    # Categorias específicas (IA, Desktop, Banco de Dados, Suporte
+    # Administrativo) já vêm filtradas pelo próprio site - confiamos nelas
+    # e pulamos o filtro de palavra-chave, pra não descartar projeto bom só
+    # porque a descrição usou um fraseado diferente do esperado.
+    # "Outra" é categoria bagunçada por natureza - aí sim exigimos bater
+    # alguma palavra-chave.
+    if not projeto.requer_filtro_palavra_chave:
+        return True
+
     texto = f"{projeto.titulo} {projeto.descricao}"
     return any(padrao.search(texto) for padrao in _PATTERNS)
 

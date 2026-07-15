@@ -2,11 +2,27 @@
 
 import os
 
+# Cada URL vem com uma flag: True = essa categoria é ampla/bagunçada,
+# então precisa passar pelo filtro de palavra-chave. False = a categoria
+# já é específica o suficiente (confiamos nela), então pulamos o filtro
+# de palavra-chave para não descartar projeto bom só por causa de
+# fraseado diferente na descrição.
 SEARCH_URLS = [
-    "https://www.99freelas.com.br/projects?categoria=web-mobile-e-software"
-    "&sub-categorias=criacao-e-integracao-com-ia+desenvolvimento-desktop+banco-de-dados",
-    "https://www.99freelas.com.br/projects?categoria=suporte-administrativo"
-    "&sub-categorias=pesquisa-online+planilhas-e-relatorios",
+    (
+        "https://www.99freelas.com.br/projects?categoria=web-mobile-e-software"
+        "&sub-categorias=criacao-e-integracao-com-ia+desenvolvimento-desktop+banco-de-dados",
+        False,
+    ),
+    (
+        "https://www.99freelas.com.br/projects?categoria=suporte-administrativo"
+        "&sub-categorias=pesquisa-online+planilhas-e-relatorios",
+        False,
+    ),
+    (
+        "https://www.99freelas.com.br/projects?categoria=web-mobile-e-software"
+        "&sub-categorias=outra-web-mobile-e-software",
+        True,
+    ),
 ]
 
 KEYWORDS = [
