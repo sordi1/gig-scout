@@ -9,12 +9,22 @@ from dataclasses import dataclass
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from config import USER_AGENT
 
 logger = logging.getLogger(__name__)
 
 HEADERS = {"User-Agent": USER_AGENT}
+
+# Sessão com retry automático (3 tentativas, com espera crescente) para
+# falha transitória de rede - sem isso, uma falha passageira derrubava a
+# URL inteira sem segunda chance.
+_session = requests.Session()
+_retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+_session.mount("https://", HTTPAdapter(max_retries=_retry))
+_session.mount("http://", HTTPAdapter(max_retries=_retry))
 
 
 @dataclass
@@ -127,7 +137,7 @@ def parse_listagem(html_bruto: str) -> list[Projeto]:
 
 def buscar_projetos(url: str, requer_filtro_palavra_chave: bool = True) -> list[Projeto]:
     """Baixa e faz o parse de uma página de listagem do 99Freelas."""
-    resp = requests.get(url, headers=HEADERS, timeout=15)
+    resp = _session.get(url, headers=HEADERS, timeout=15)
     resp.raise_for_status()
     projetos = parse_listagem(resp.text)
     for p in projetos:

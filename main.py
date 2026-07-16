@@ -29,10 +29,20 @@ def main() -> None:
         alertar_quebra([url for url, _ in SEARCH_URLS])
         return
 
-    relevantes = filtrar_e_ordenar(todos_os_projetos)
+    # Dedup por ID - o mesmo projeto pode, em tese, aparecer em mais de uma
+    # URL de busca (categorias combinadas). Mantém a primeira ocorrência.
+    vistos_nesta_execucao = set()
+    projetos_unicos = []
+    for p in todos_os_projetos:
+        if p.id not in vistos_nesta_execucao:
+            vistos_nesta_execucao.add(p.id)
+            projetos_unicos.append(p)
+
+    relevantes = filtrar_e_ordenar(projetos_unicos)
 
     vistos = carregar_vistos()
-    novos = [p for p in relevantes if p.id not in vistos]
+    vistos_set = set(vistos)  # set só pra checagem O(1), a ordem fica na lista `vistos`
+    novos = [p for p in relevantes if p.id not in vistos_set]
     logger.info("%d relevantes, %d novos desde a última execução", len(relevantes), len(novos))
 
     if not novos:
@@ -49,7 +59,7 @@ def main() -> None:
 
     enviar_email(montar_email(novos), montar_email_html(novos))
 
-    vistos.update(p.id for p in novos)
+    vistos.extend(p.id for p in novos)
     salvar_vistos(vistos)
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -46,7 +47,15 @@ def montar_email_html(projetos: list[Projeto]) -> str:
     cards = []
     for p in projetos:
         cor = _cor_propostas(p.propostas)
-        cliente = p.cliente_nome or "sem nome"
+        # Escape - título, categoria e nome de cliente vêm do site (conteúdo
+        # gerado por terceiros). Sem isso, um título com "<" ou "&" quebrava
+        # o layout do e-mail.
+        titulo = html.escape(p.titulo)
+        categoria = html.escape(p.categoria)
+        nivel = html.escape(p.nivel)
+        cliente = html.escape(p.cliente_nome or "sem nome")
+        link = html.escape(p.link)
+        trecho_descricao = html.escape(p.descricao[:180] + ("…" if len(p.descricao) > 180 else ""))
         avaliacao = (
             f"{p.cliente_avaliacoes} avaliações, nota {p.cliente_nota}"
             if p.cliente_avaliacoes
@@ -55,14 +64,17 @@ def montar_email_html(projetos: list[Projeto]) -> str:
         cards.append(f"""
         <div style="border:1px solid #e5e7eb; border-radius:8px; padding:16px;
                     margin-bottom:16px; font-family:Arial, sans-serif;">
-          <a href="{p.link}" style="font-size:16px; font-weight:bold;
-             color:#1d4ed8; text-decoration:none;">{p.titulo}</a>
+          <a href="{link}" style="font-size:16px; font-weight:bold;
+             color:#1d4ed8; text-decoration:none;">{titulo}</a>
           <div style="margin:8px 0; font-size:13px; color:#4b5563;">
-            {p.categoria} · {p.nivel} · Cliente: {cliente} ({avaliacao})
+            {categoria} · {nivel} · Cliente: {cliente} ({avaliacao})
           </div>
           <div style="display:inline-block; padding:2px 10px; border-radius:12px;
                       background:{cor}; color:white; font-size:13px; font-weight:bold;">
             {p.propostas} propostas
+          </div>
+          <div style="margin-top:8px; font-size:13px; color:#374151;">
+            {trecho_descricao}
           </div>
         </div>
         """)

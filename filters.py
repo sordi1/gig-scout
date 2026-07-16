@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from config import KEYWORDS, MAX_PROJECTS_PER_EMAIL, MAX_PROPOSALS, MIN_AVALIACOES_CLIENTE
+from config import KEYWORDS, MAX_PROJECTS_PER_EMAIL, MAX_PROPOSALS, MIN_AVALIACOES_CLIENTE, MIN_NOTA_CLIENTE
 from scraper import Projeto
 
 _PATTERNS = [re.compile(rf"\b{re.escape(kw)}\b", re.IGNORECASE) for kw in KEYWORDS]
@@ -14,6 +14,11 @@ def _e_relevante(projeto: Projeto) -> bool:
     if projeto.propostas > MAX_PROPOSALS:
         return False
     if projeto.cliente_avaliacoes < MIN_AVALIACOES_CLIENTE:
+        return False
+    # Só aplica o piso de nota se o cliente já tiver avaliação - cliente
+    # novo (nota 0.0 porque nunca foi avaliado) não deveria ser penalizado
+    # como se tivesse nota ruim.
+    if projeto.cliente_avaliacoes > 0 and projeto.cliente_nota < MIN_NOTA_CLIENTE:
         return False
 
     # Categorias específicas (IA, Desktop, Banco de Dados, Suporte

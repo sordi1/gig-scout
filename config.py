@@ -45,6 +45,11 @@ MAX_PAGINAS_POR_URL = 5
 # cliente sem histórico nenhum.
 MIN_AVALIACOES_CLIENTE = 0
 
+# Nota mínima do cliente (0 a 5). 0 = não filtra por nota.
+# MIN_AVALIACOES_CLIENTE sozinho não bastava: um cliente com 50 avaliações
+# e nota 2.0 passava igual, porque só checávamos a quantidade.
+MIN_NOTA_CLIENTE = 0.0
+
 # Se True, manda um e-mail curto avisando "nada novo" quando não há
 # projeto relevante desde a última execução - serve também como sinal de
 # que a automação está rodando de verdade, não travada em silêncio.

@@ -95,3 +95,25 @@ def test_categoria_confiavel_ainda_respeita_teto_de_propostas():
         titulo="Qualquer coisa", propostas=999, requer_filtro_palavra_chave=False,
     )]
     assert filtrar_e_ordenar(projetos) == []
+
+
+def test_cliente_com_nota_baixa_e_descartado_quando_exigido(monkeypatch):
+    import filters
+
+    monkeypatch.setattr(filters, "MIN_NOTA_CLIENTE", 4.0)
+    projetos = [_projeto(
+        titulo="Automação Python", cliente_avaliacoes=50, cliente_nota=2.0,
+    )]
+    assert filtrar_e_ordenar(projetos) == []
+
+
+def test_cliente_sem_nenhuma_avaliacao_nao_e_penalizado_pela_nota(monkeypatch):
+    # cliente novo (nota 0.0 porque nunca foi avaliado) não deveria ser
+    # tratado como se tivesse nota ruim
+    import filters
+
+    monkeypatch.setattr(filters, "MIN_NOTA_CLIENTE", 4.0)
+    projetos = [_projeto(
+        titulo="Automação Python", cliente_avaliacoes=0, cliente_nota=0.0,
+    )]
+    assert len(filtrar_e_ordenar(projetos)) == 1
