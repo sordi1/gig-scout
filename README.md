@@ -2,7 +2,7 @@
 
 Monitor automático de projetos freelance. Raspa as listagens, filtra pelo que é relevante, ordena pelos projetos com menos concorrência e avisa por e-mail — pronto pra você revisar e decidir em segundos.
 
-Roda sozinho, de 2 em 2 horas, via GitHub Actions — sem depender de nenhum computador ligado.
+Roda sozinho, de 2 em 2 horas, via GitHub Actions.
 
 ## Por quê
 
@@ -32,8 +32,6 @@ export EMAIL_DESTINATARIO="seu@email.com"
 python main.py
 ```
 
-A senha de app é gerada em `myaccount.google.com/apppasswords` (Gmail) e requer verificação em duas etapas ativada na conta.
-
 ## Rodando os testes
 
 ```bash
@@ -55,7 +53,3 @@ Requer 3 secrets configurados em *Settings → Secrets and variables → Actions
 ## Stack
 
 Python 3.12 · requests · BeautifulSoup4 · pytest · GitHub Actions
-
-## Se o site mudar de estrutura
-
-Se `buscar_projetos()` passar a retornar zero resultados, o HTML provavelmente mudou. Baixe a página manualmente, confira a nova estrutura e ajuste os seletores em `scraper.py`. Se o site passar a montar a lista via JavaScript, troque a função de download por uma versão com [Playwright](https://playwright.dev/python/).
