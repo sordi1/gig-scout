@@ -1,12 +1,12 @@
 # gig-scout
 
-Monitor automático de projetos freelance. Raspa as listagens, filtra pelo que é relevante, ordena pelos projetos com menos concorrência e avisa por e-mail — pronto pra você revisar e decidir em segundos.
+Monitor automático de projetos. Raspa as listagens, filtra pelo que é relevante, ordena pelos projetos com menos concorrência e avisa por e-mail — pronto pra você revisar e decidir em segundos.
 
 Roda sozinho, de 2 em 2 horas, via GitHub Actions.
 
 ## Por quê
 
-Marketplaces de freelance publicam dezenas de projetos por dia, espalhados em várias categorias. Encontrar manualmente os que valem a pena — pouca concorrência, dentro do escopo certo, cliente com histórico — consome tempo que poderia ir para o trabalho em si. Este projeto automatiza essa triagem.
+Marketplaces publicam dezenas de projetos por dia, espalhados em várias categorias. Encontrar manualmente os que valem a pena — pouca concorrência, dentro do escopo certo, cliente com histórico — consome tempo que poderia ir para o trabalho em si. Este projeto automatiza essa triagem.
 
 ## Como funciona
 
